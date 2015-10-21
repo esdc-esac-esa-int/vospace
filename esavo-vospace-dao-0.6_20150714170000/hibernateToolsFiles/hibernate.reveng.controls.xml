@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+
+    <type-mapping>
+        <sql-type jdbc-type="INTEGER" hibernate-type="java.lang.Integer" not-null="true"></sql-type>
+        <sql-type jdbc-type="BIGINT" hibernate-type="java.lang.Long"></sql-type>
+        <sql-type jdbc-type="CHAR" hibernate-type="java.lang.String"></sql-type>
+        <sql-type jdbc-type="DOUBLE" hibernate-type="java.lang.Double"></sql-type>
+        <sql-type jdbc-type="REAL" hibernate-type="java.lang.Double"></sql-type>
+
+        <!-- This will map the CITEXT type to String!! -->
+        <!-- Also Scircle and Spoint will map to String!! -->
+        <sql-type jdbc-type="OTHER" hibernate-type="java.lang.String"></sql-type>
+
+    </type-mapping>
+
+    <!-- ================================== -->
+    <!-- Include the following tables -->
+    <!-- ================================== -->
+
+    <table-filter match-schema="controls" match-name="user" />
+    <table-filter match-schema="controls" match-name="access_log" />
+    <table-filter match-schema="controls" match-name="group" />
+    <table-filter match-schema="controls" match-name="data_mng_log" />
+    <table-filter match-schema="controls" match-name="metadata_retrieval_log" />
+    <table-filter match-schema="controls" match-name="share_log" />
+    <table-filter match-schema="controls" match-name="transfer_log" />
+
+    <!-- ================================== -->
+    <!-- Use sequences as primary keys -->
+    <!-- ================================== -->
+
+    <table schema="controls" name="user">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.user_user_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="controls" name="access_log">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.access_log_access_log_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="controls" name="group">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.group_group_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+        
+    <table schema="controls" name="data_mng_log">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.data_mng_log_data_mng_log_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+        
+    <table schema="controls" name="metadata_retrieval_log">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.metadata_retrieval_log_metadata_retrieval_log_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+        
+    <table schema="controls" name="share_log">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.share_log_share_log_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+        
+    <table schema="controls" name="transfer_log">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">controls.transfer_log_transfer_log_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+</hibernate-reverse-engineering>

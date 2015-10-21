@@ -1,0 +1,71 @@
+# build.properties.defaults
+#
+# vospace	-	VOSpace 2.0 Server
+# Copyright (C) 2013-  ESA - ESAC - Madrid, Spain
+
+### software name & version
+software.name=vospace
+software.version=1.2.3_alpha
+
+### compiler flags & options
+javac.source=1.6
+javac.target=1.6
+javac.compiler=javac1.6
+
+javac.nowarn=false
+javac.debug=true
+javac.deprec=true
+
+### archiver flags & options
+war.compress=true
+war.basedir=war
+war.update=false
+
+### junit flags & options
+junit.summary=true
+junit.output=false
+junit.halt=false
+
+### javadoc flags & options
+javadoc.packages=*
+javadoc.access=protected
+javadoc.fail=true
+
+### checkstyle flags & options
+checkstyle.config=setup/sun_checks.xml
+checkstyle.fail=false
+checkstyle.style=setup/checkstyle.xsl
+lib.checkstyle.jar=lib/checkstyle-4.4.jar
+
+### conf & java directories
+resources.dir=resources
+conf.dir=src/conf
+conf.webxml.file=${conf.dir}/web.xml
+conf.manifest.file=${conf.dir}/MANIFEST.MF
+log4j.properties.file=${conf.dir}/log4j.properties
+server.properties.file=${conf.dir}/vospace.properties
+java.dir=src/java
+subst.dir=dist/subst
+images.dir=images
+
+### build & dist directories
+build.dir=build
+build.classes.dir=${build.dir}/classes
+build.javadoc.dir=${build.dir}/javadoc
+build.testclass.dir=${build.dir}/testclass
+build.jureport.dir=${build.dir}/jureport
+build.csreport.dir=${build.dir}/csreport
+build.webxml.file=${build.classes.dir}/web.xml
+
+### distribution & deploy directories
+deploy.dir=war
+dist.dir=dist
+dist.war.file=${dist.dir}/${software.name}-${deploy.target}.war
+final.dir=final
+final.war.file=${final.dir}/${software.name}-${deploy.target}.war
+lib.dir=lib
+
+## Vospace prefix
+vospace.prefix=vos://esavo!vospace
+
+security.conf=applicationContext-security-cas-rest-imp-var.xml

@@ -1,0 +1,9 @@
+# build.properties.beta
+#
+# VOSpace Data Layer - Data Access Objects module
+# Copyright (C) 2014  ESA - ESAC - Madrid, Spain
+
+#  BETA persistence setup
+db.url=xxx
+db.user=xxx
+db.pwd=xxx

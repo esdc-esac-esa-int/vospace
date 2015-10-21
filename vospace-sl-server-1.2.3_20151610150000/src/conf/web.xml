@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  
+    <display-name>VOSpace Server</display-name>
+
+        <context-param>
+            <param-name>cas.server.url</param-name>
+            <param-value>@cas.server.url@</param-value>
+        </context-param>        
+        <context-param>
+            <param-name>ldap.server</param-name>
+            <param-value>@ldap.server@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.jdbc.dbServer</param-name>
+            <param-value>@db.server@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.jdbc.dbPort</param-name>
+            <param-value>@db.port@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.jdbc.dbName</param-name>
+            <param-value>@db.name@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.jdbc.dbOwner</param-name>
+            <param-value>@db.owner@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.jdbc.dbPwd</param-name>
+            <param-value>@db.pwd@</param-value>
+        </context-param>        
+        <context-param>
+            <param-name>uws.app.id</param-name>
+            <param-value>@app.id@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.restart.pending_jobs</param-name>
+            <param-value>@uws.restart.pending_jobs@</param-value>
+        </context-param>        
+        <context-param>
+            <param-name>uws.app.storage_dir</param-name>
+            <param-value>@uws.app.storage_dir@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.max_running_jobs</param-name>
+            <param-value>@uws.max_running_jobs@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.db.usage</param-name>
+            <param-value>@uws.db.usage@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.upload.enabled</param-name>
+            <param-value>@uws.upload.enabled@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.upload.max_size</param-name>
+            <param-value>@uws.upload.max_size@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.old_empty_dirs_cmp_time</param-name>
+            <param-value>@uws.old_empty_dirs_cmp_time@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.events_removal_check_time</param-name>
+            <param-value>@uws.events_removal_check_time@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.events_delta_destruction_time</param-name>
+            <param-value>@uws.events_delta_destruction_time@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.notifications_removal_check_time</param-name>
+            <param-value>@uws.notifications_removal_check_time@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.notifications_delta_destruction_time</param-name>
+            <param-value>@uws.notifications_delta_destruction_time@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.ldap.server</param-name>
+            <param-value>@uws.ldap.server@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.ldap.search_base</param-name>
+            <param-value>@uws.ldap.search_base@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.ldap.usr</param-name>
+            <param-value>@uws.ldap.usr@</param-value>
+        </context-param>
+        <context-param>
+            <param-name>uws.ldap.pwd</param-name>
+            <param-value>@uws.ldap.pwd@</param-value>
+        </context-param>
+        
+		  <!-- Spring secutity configuration -->
+        <context-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                    /WEB-INF/applicationContext-security-cas-rest-imp-var.xml
+            </param-value>
+        </context-param>
+
+        <context-param>
+		  <param-name>webAppRootKey</param-name>
+		  <param-value>ldap.root</param-value>
+		</context-param>
+		
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+    <filter-name>transferFilter</filter-name>
+    <filter-class>esavo.vospace.service.action.TransferFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>transferFilter</filter-name>
+    <url-pattern>/transfers/*</url-pattern>
+  </filter-mapping>
+  
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <!-- Added to try to solve the parsing problem -->
+  <!-- <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener> -->
+  <!-- End of addition to try to solve the parsing problem -->
+  
+  <listener>
+    <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+  </listener>
+  
+  <listener>
+    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+  </listener>
+  <!-- End of Spring Security configuration -->
+  
+  <!-- Vospace Services -->
+  <servlet>
+    <servlet-name>protocolServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.ProtocolServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>protocolServlet</servlet-name>
+    <url-pattern>/servlet/protocols</url-pattern>
+    <url-pattern>/rest/protocols</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>propertyServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.PropertyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>propertyServlet</servlet-name>
+    <url-pattern>/servlet/properties</url-pattern>
+    <url-pattern>/rest/properties</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>viewServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.ViewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>viewServlet</servlet-name>
+    <url-pattern>/servlet/views</url-pattern>
+    <url-pattern>/rest/views</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>nodeServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.NodeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>nodeServlet</servlet-name>
+    <url-pattern>/servlet/nodes/*</url-pattern>
+    <url-pattern>/rest/nodes/*</url-pattern>
+  </servlet-mapping>
+  
+<!--   <servlet>
+    <servlet-name>restfulServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.RestfulTransferServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>restfulServlet</servlet-name>
+    <url-pattern>/servlet/transfers/*</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>restfulCasServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.RestfulCasTransferServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>restfulCasServlet</servlet-name>
+    <url-pattern>/rest/transfers/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>transferServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.TransferServlet2</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>transferServlet</servlet-name> 
+    <url-pattern>/transfers/*</url-pattern>
+  </servlet-mapping> -->
+  
+  <servlet>
+    <servlet-name>restfulCasServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.TransferServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>restfulCasServlet</servlet-name>
+    <url-pattern>/rest/transfers/*</url-pattern>
+    <url-pattern>/servlet/transfers/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>transferServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.TransferServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>transferServlet</servlet-name> 
+    <url-pattern>/transfers/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>dataServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.DataServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dataServlet</servlet-name>
+    <url-pattern>/servlet/data/*</url-pattern>
+    <url-pattern>/rest/data/*</url-pattern>
+  </servlet-mapping>
+  <!-- Vospace Services -->
+  
+  <!-- Specific non-Vospace Services for Client -->
+  <servlet>
+    <servlet-name>shareServlet</servlet-name>
+    <servlet-class>esavo.vospace.service.action.ShareServlet</servlet-class>
+  </servlet>        
+  <servlet-mapping>
+    <servlet-name>shareServlet</servlet-name>
+    <url-pattern>/servlet/share/*</url-pattern>
+    <url-pattern>/rest/share/*</url-pattern>
+  </servlet-mapping>  
+  <!-- Specific non-Vospace Services for Client --> 
+  
+    <!-- CasLogin servlet -->
+    <servlet>
+        <display-name>CasLoginServlet</display-name>
+        <servlet-name>CasLoginServlet</servlet-name>
+        <servlet-class>esavo.vospace.service.action.CasServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CasLoginServlet</servlet-name>
+        <url-pattern>/CasLogin</url-pattern>
+    </servlet-mapping>
+  
+	<!-- CasLogout servlet -->
+	    <servlet>
+	        <display-name>CasLogoutServlet</display-name>
+	        <servlet-name>CasLogoutServlet</servlet-name>
+	        <servlet-class>esavo.vospace.service.action.CasServlet</servlet-class>
+	    </servlet>
+	    <servlet-mapping>
+	        <servlet-name>CasLogoutServlet</servlet-name>
+	        <url-pattern>/CasLogout</url-pattern>
+	    </servlet-mapping>
+    
+  <!-- Default page to serve -->
+  <welcome-file-list>
+      <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <context-param>
+      <param-name>localfs</param-name>
+      <param-value>@local.file.system@</param-value>
+   </context-param>
+
+  <!-- Cas servlet -->
+    <!-- <servlet>
+        <display-name>CasLoginServlet</display-name>
+        <servlet-name>CasLoginServlet</servlet-name>
+        <servlet-class>esac.archive.gacs.sl.services.actions.CasServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CasLoginServlet</servlet-name>
+        <url-pattern>/CasLogin</url-pattern>
+    </servlet-mapping> -->
+
+    <!-- <servlet>
+        <display-name>CasLogoutServlet</display-name>
+        <servlet-name>CasLogoutServlet</servlet-name>
+        <servlet-class>esac.archive.gacs.sl.services.actions.CasServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CasLogoutServlet</servlet-name>
+        <url-pattern>/CasLogout</url-pattern>
+    </servlet-mapping> -->
+    <!-- Cas servlet -->
+  
+  <servlet>
+    <servlet-name>SystemServiceServlet</servlet-name>
+    <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+    <init-param>
+      <param-name>services</param-name>
+      <param-value/>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>SystemServiceServlet</servlet-name>
+    <url-pattern>/_ah/spi/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Hiddes from URL jsessionid -->
+  <session-config>
+     <tracking-mode>COOKIE</tracking-mode>
+  </session-config>
+ 
+</web-app>

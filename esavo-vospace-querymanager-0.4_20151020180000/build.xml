@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ build.xml
+ Vospace DL Query Handler
+ Copyright (C) 2011  ESA - ESAC - Madrid, Spain
+-->
+
+<project name="esavo-vospace-querymanager" default="dist" 
+	xmlns:cl="antlib:net.jtools.classloadertask" basedir=".">
+
+	<description>
+    	Vospace DL Query Manager - Data Layer
+    </description>
+
+	<!-- Jera Ant task for encoding passwords -->
+	<taskdef name="query" classpath="setup/antlibs/JeraAntTasks.jar" classname="com.jera.anttasks.Query" />
+
+	<!-- Included for autocontent deploy -->
+	<typedef uri="antlib:net.jtools.classloadertask" resource="net/jtools/classloadertask/antlib.xml">
+		<classpath>
+			<fileset dir="setup/antlibs/" includes="ant-classloadertask.jar" />
+		</classpath>
+	</typedef>
+
+	<cl:classloader loader="project">
+		<classpath>
+			<fileset dir="setup/antlibs" includes="jsch-0.1.49.jar" />
+		</classpath>
+	</cl:classloader>
+
+	<!-- Included for autocontent deploy -->
+
+	<property file="build.properties" />
+	<property file="build.properties.defaults" />
+	<import file="ivy-tasks.xml" />
+
+	<path id="subant.path">
+	</path>
+
+	<fileset id="lib.fileset" dir="${lib.dir}">
+		<include name="*.jar" />
+	</fileset>
+
+	<path id="build.path">
+		<fileset refid="lib.fileset" />
+	</path>
+
+	<path id="test.path">
+		<pathelement location="${build.classes.dir}" />
+		<path refid="build.path" />
+	</path>
+
+	<path id="final.path">
+		<fileset dir="${final.dir}/${component.name}-${component.version}/lib" />
+	</path>
+
+	<target name="all" depends="dist,test,docs,check" description="Build, pack, test, document and check the application" />
+
+	<target name="clean" depends="ivy-clean-jars,ivy-clean-cache" description="Clean up the environment">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${final.dir}" />
+		<delete dir="${logs.dir}" />
+	</target>
+
+	<target name="init" description="Initialise the environment">
+		<tstamp />
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="build" depends="init,ivy-retrieve-runtime,-build-code" 
+		description="Compile the java sources">
+	</target>
+
+	<target name="build-test" depends="init,ivy-retrieve-test,-build-code, -update-sonar-projectVersion" description="Compile the java sources along with the test dependencies">
+	</target>
+	   
+	<target name="-build-code">
+		<mkdir dir="${build.classes.dir}" />
+
+		<input message="On which target do you want to deploy today ? " addproperty="deploy.target" validargs="local,int,dev,oper" defaultvalue="local" />
+		<property file="build.properties.${deploy.target}" />
+		<subant buildpathref="subant.path" target="build" failonerror="true">
+			<property name="deploy.target" value="${deploy.target}" />
+		</subant>
+
+		<javac srcdir="${java.dir}" destdir="${build.classes.dir}" classpathref="build.path"
+			   compiler="${javac.compiler}" target="${javac.target}" source="${javac.source}"
+			   nowarn="${javac.nowarn}" debug="${javac.debug}" deprecation="${javac.deprec}" />
+
+		<echo>Copying ${conf.dir} folder...</echo>
+		<copy todir="${build.classes.dir}" overwrite="true" verbose="true" includeemptydirs="true">
+			<fileset dir="${conf.dir}" excludes="MANIFEST.MF"/>
+		</copy>
+		
+		<copy file="${log4j.properties.file}" todir="${build.classes.dir}" />
+        <copy file="${server.properties.file}" todir="${build.classes.dir}" />
+		<echo>Replace tokens in log4j configuration file</echo>
+		<replace file="${build.classes.dir}/log4j.properties" summary="true">
+			<replacefilter token="logsDirToken" value="${log4j.logs}" />
+			<replacefilter token="versionToken" value="${software.version}" />
+			<replacefilter token="smtphostToken" value="${smtp.host}" />
+			<replacefilter token="errorMailToToken" value="${error.mail}" />
+		</replace>
+
+		<echo>Replace tokens in QueryManager.properties configuration file</echo>
+		<replace file="${build.classes.dir}/QueryManager.properties" summary="true">
+			<replacefilter token="@serviceFileToken" value="${server.service.file}" />
+			<replacefilter token="@serviceClientFileToken" value="${server.service.client.file}" />
+			<replacefilter token="@servicePrefixToken" value="${vospace.prefix}" />
+		</replace>
+
+	</target>
+
+	<target name="dist" depends="build" description="Make the distribution files (pack as JAR, WAR, EAR, ...)">
+		<mkdir dir="${dist.dir}" />
+
+		<jar destfile="${dist.jar.file}" basedir="${build.classes.dir}"
+			 manifest="${conf.manifest.file}" compress="${jar.compress}"
+			 index="${jar.index}" update="${jar.update}" filesetmanifest="merge">
+		</jar>
+	</target>
+
+	<target name="final" depends="dist" description="Make the final distribution group of files">
+		<subant buildpathref="subant.path" target="final" failonerror="true">
+			<property name="deploy.target" value="${deploy.target}" />
+		</subant>
+
+		<mkdir dir="${final.dir}/${component.name}-${component.version}" />
+		<mkdir dir="${final.dir}/${component.name}-${component.version}/bin" />
+		<mkdir dir="${final.dir}/${component.name}-${component.version}/lib" />
+		<mkdir dir="${final.dir}/${component.name}-${component.version}/logs" />
+		<mkdir dir="${final.dir}/${component.name}-${component.version}/conf" />
+
+		<copy todir="${final.dir}/${component.name}-${component.version}/conf">
+			<fileset dir="${build.classes.dir}">
+				<include name="log4j.properties" />
+			</fileset>
+			<fileset dir="${build.classes.dir}/esavo/vospace/dl/querymanager">
+			</fileset>
+		</copy>
+
+		<copy todir="${final.dir}/${component.name}-${component.version}/lib" verbose="true" overwrite="true">
+			<fileset dir="${dist.dir}" excludes="${software.name}-${software.version}.jar" />
+			<fileset dir="${lib.dir}">
+				<exclude name="junit*" />
+				<exclude name="checkstyle*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${final.dir}/${component.name}-${component.version}/bin">
+			<fileset dir="${bin.dir}" />
+		</copy>
+		<!-- Generate the classpath to be used in the run script, and replace -->
+		<!-- the token inside the run script with this value                  -->
+		<pathconvert property="run.classpath" refid="final.path" pathsep=":">
+			<mapper>
+				<chainedmapper>
+					<flattenmapper />
+					<globmapper from="*.jar" to="lib/*.jar" casesensitive="no" />
+				</chainedmapper>
+			</mapper>
+		</pathconvert>
+
+		<!-- Copy now the main jar, and make it the first one in the classpath! -->
+		<copy todir="${final.dir}/${component.name}-${component.version}/lib" 
+			verbose="true" overwrite="true" file="${dist.jar.file}">
+		</copy>
+		<property name="run.classpath.complete" value="lib/${software.name}-${software.version}.jar:${run.classpath}" />
+
+		<replace dir="${final.dir}/${component.name}-${component.version}/bin" casesensitive="false">
+			<replacefilter token="@server.instdir@" value="${server.instdir}/${component.name}-${component.version}" />
+			<replacefilter token="@run.classpath@" value="${run.classpath.complete}" />
+			<replacefilter token="@server.jar@" value="${software.name}-${software.version}.jar" />
+		</replace>
+
+		<tar tarfile="${final.dir}/${component.name}-${component.version}.tar" basedir="${final.dir}" 
+			excludes="${component.name}-${component.version}.tar" />
+		<copy todir="${dist.dir}" verbose="true" overwrite="true" file="${final.dir}/${component.name}-${component.version}.tar" />
+	</target>
+
+	<target name="deploy" depends="final" description="Deploy the application">
+		<query name="server.password" 
+				message="Please enter password for ${server.user}@${server.host}"
+				password="true" />
+
+		<scp file="${final.dir}/${component.name}-${component.version}.tar" todir="${server.user}:${server.password}@${server.host}:${server.instdir}" trust="true" />
+
+		<property name="ssh.mainCmd" value="cd ${server.instdir};
+   			                            mv ${component.name}-${component.version} /tmp/${component.name}-${component.version}.old.`date +%y%m%d_%H%M%S`;
+   			                            tar xvf ${component.name}-${component.version}.tar; 
+   			                            rm -rf ${component.name}-${component.version}.tar;
+   			                            chmod 744 ${component.name}-${component.version}/bin/**" />
+		<property name="ssh.createSymLinkCmd" value="cd;
+										rm -f ${component.name};
+										ln -s ${server.instdir}/${component.name}-${component.version} ${component.name}" />
+
+		<echo message="Executing on ${server.user}@${server.host}:${server.instdir}" />
+
+		<echo message="${ssh.mainCmd}" />
+		<sshexec host="${server.host}" username="${server.user}" password="${server.password}"
+				verbose="true" command="${ssh.mainCmd}" />
+
+		<condition property="deploy.createSymLink">
+			<equals arg1="${deploy.target}" arg2="oper" />
+		</condition>
+
+		<antcall target="createSymLink" />
+
+		<echo>End of deployment procedure.</echo>
+	</target>
+
+	<target name="createSymLink" if="deploy.createSymLink">
+		<echo message="${deploy.createSymLink}" />
+		<sshexec host="${server.host}" username="${server.user}" password="${server.password}"
+				verbose="true" command="${ssh.createSymLinkCmd}" />
+	</target>
+
+	<target name="test" depends="build-test" description="Run the unit tests (using JUnit or other specific tests)">
+		<mkdir dir="${build.testclass.dir}" />
+		<mkdir dir="${build.jureport.dir}" />
+		<javac srcdir="test" destdir="${build.testclass.dir}" classpathref="test.path" />
+
+		<copy todir="${build.testclass.dir}">
+			<fileset dir="${build.classes.dir}">
+				<include name="log4j.properties" />
+			</fileset>
+			<fileset dir="${build.classes.dir}/esavo/vospace/dl/querymanager">
+				<include name="mappingUmlHibernate.xml" />
+			</fileset>
+		</copy>
+
+		<junit printsummary="${junit.summary}" showoutput="${junit.output}">
+			<classpath>
+				<path refid="test.path" />
+				<pathelement location="${build.testclass.dir}" />
+			</classpath>
+			<batchtest todir="${build.jureport.dir}" haltonfailure="${junit.halt}">
+				<fileset dir="${build.testclass.dir}" excludes="AbstractQueryHandlerTestClass" includes="**/*Test.class" />
+			</batchtest>
+			<formatter type="xml" />
+		</junit>
+
+		<junitreport todir="${build.jureport.dir}">
+			<fileset dir="${build.jureport.dir}" includes="TEST-*.xml" />
+			<report todir="${build.jureport.dir}" />
+		</junitreport>
+	</target>
+
+	<target name="docs" depends="init,ivy-retrieve-runtime"
+			description="Generate the API javadoc (and other documentation files)">
+		<mkdir dir="${build.javadoc.dir}" />
+
+		<javadoc sourcepath="${java.dir}" destdir="${build.javadoc.dir}"
+				 source="${javac.source}" packagenames="${javadoc.packages}"
+				 access="${javadoc.access}" failonerror="${javadoc.fail}">
+			<classpath refid="build.path" />
+			<link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
+		</javadoc>
+	</target>
+
+	<target name="check" depends="build" description="Check the sources for style violations (and report them)">
+		<mkdir dir="${build.csreport.dir}" />
+		<taskdef resource="checkstyletask.properties" classpath="${lib.checkstyle.jar}" />
+
+		<checkstyle config="${checkstyle.config}" failonviolation="${checkstyle.fail}">
+			<classpath>
+				<path refid="build.path" />
+				<pathelement location="${build.classes.dir}" />
+			</classpath>
+			<fileset dir="${java.dir}" includes="**/*.java" />
+			<formatter type="xml" tofile="${build.csreport.dir}/csreport.xml" />
+		</checkstyle>
+
+		<xslt basedir="${build.csreport.dir}" includes="*.xml"
+			  destdir="${build.csreport.dir}" style="${checkstyle.style}">
+			<param name="output.dir" expression="${build.csreport.dir}" />
+			<param name="source.dir" expression="${basedir}/${java.dir}/" />
+		</xslt>
+	</target>
+   
+   <!--=============================================================================-->
+    <!--               TARGET '-update-sonar-projectVersion'                         -->
+    <!--=============================================================================-->
+
+    <target name="-update-sonar-projectVersion" depends="init"
+     description="Update value of sonar.projectVersion property in sonar properties file">
+      <echo>Extract version number from Ivy file</echo>
+      <loadfile srcfile="ivy.xml" property="ivy.revision">
+         <filterchain>
+            <linecontains>
+               <contains value="revision=&quot;" />
+            </linecontains>
+            <tokenfilter>
+               <replacestring from="revision=&quot;" to="&quot;" />
+            </tokenfilter>
+         </filterchain>
+      </loadfile>
+      <echo message="${ivy.revision}" />
+      <echo>Replace version in sonar configuration file</echo>
+      <replaceregexp file="sonar-project.properties" match="sonar.projectVersion=(.)*"
+           replace="sonar.projectVersion=${ivy.revision}">
+      </replaceregexp>
+   </target>  
+	
+</project>

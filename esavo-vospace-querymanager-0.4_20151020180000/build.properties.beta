@@ -1,0 +1,19 @@
+# build.properties.beta
+#
+# DL Query Handler
+# Copyright (C) 2012  ESA - ESAC - Madrid, Spain
+
+### beta target flags & options
+server.host=xxx
+server.user=xxx
+server.instdir=xxx
+
+# RMI properties
+rmi.registry.port=3011
+rmi.service.port=3012
+
+## Vospace prefix
+vospace.prefix=vos://esavo!vospace
+
+smtp.host=xxx
+error.mail=xxx

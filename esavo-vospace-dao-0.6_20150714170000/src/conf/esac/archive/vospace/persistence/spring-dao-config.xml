@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//Spring//DTD Bean//EN"
+"http://www.springframework.org/dtd/spring-beans.dtd"
+[<!ENTITY absi-spring-dao-config SYSTEM "esac/archive/absi/persistence/absi-spring-dao-config.xml">]>
+
+<beans>
+
+    <!--################################################### -->
+    <!--########## DB Password encrtyption settings ####### -->
+    <!--################################################### -->
+    <!--See http://www.jasypt.org/api/jasypt-hibernate4/1.9.0/org/jasypt/hibernate4/encryptor/HibernatePBEStringEncryptor.html -->
+
+    <bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+        <property name="algorithm" value="PBEWithMD5AndDES" />
+        <property name="passwordEnvName" value="JASYPT_HST_KEY" />
+    </bean>
+
+    <bean id="strongEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="config" ref="environmentVariablesConfiguration" />
+    </bean>
+
+    <bean id="hibernateEncryptor" class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+        <property name="registeredName" value="configurationHibernateEncryptor" />
+        <property name="encryptor" ref="strongEncryptor" />
+    </bean>
+
+    <!--################################################### -->
+    <!--########## Hibernate configuration ########### -->
+    <!--################################################### -->
+
+    <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <!-- class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"> -->
+        <property name="configLocation">
+            <value>classpath:esac/archive/vospace/persistence/hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <!--################################################### -->
+    <!--########## Dao configuration ########### -->
+    <!--################################################### -->
+
+    <bean id="nodeDao" class="esac.archive.vospace.persistence.dao.impl.NodeDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="linkNodeDao" class="esac.archive.vospace.persistence.dao.impl.LinkNodeDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="dataNodeDao" class="esac.archive.vospace.persistence.dao.impl.DataNodeDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="containerNodeDao" class="esac.archive.vospace.persistence.dao.impl.ContainerNodeDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="structuredDataNodeDao" class="esac.archive.vospace.persistence.dao.impl.StructuredDataNodeDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="unstructuredDataNodeDao" class="esac.archive.vospace.persistence.dao.impl.UnstructuredDataNodeDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>    
+    
+    <bean id="groupsDao" class="esac.archive.vospace.persistence.dao.impl.GroupsDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="usersDao" class="esac.archive.vospace.persistence.dao.impl.UsersDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="voCapabilityDao" class="esac.archive.vospace.persistence.dao.impl.VoCapabilityDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="voPropertyDao" class="esac.archive.vospace.persistence.dao.impl.VoPropertyDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="voProtocolDao" class="esac.archive.vospace.persistence.dao.impl.VoProtocolDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="voViewDao" class="esac.archive.vospace.persistence.dao.impl.VoViewDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="viewParamDao" class="esac.archive.vospace.persistence.dao.impl.ViewParamDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="protocolParamDao" class="esac.archive.vospace.persistence.dao.impl.ProtocolParamDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="capabilityParamDao" class="esac.archive.vospace.persistence.dao.impl.CapabilityParamDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="nodePropertyDao" class="esac.archive.vospace.persistence.dao.impl.NodePropertyDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="userNodePropertyDao" class="esac.archive.vospace.persistence.dao.impl.UserNodePropertyDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="groupNodePropertyDao" class="esac.archive.vospace.persistence.dao.impl.GroupNodePropertyDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <!--############################################################## -->
+    <!--########## Dao configuration for Controls Database ########### -->
+    <!--############################################################## -->
+    
+    <bean id="accessLogDao" class="esac.archive.vospace.persistence.dao.impl.AccessLogDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="dataMngLogDao" class="esac.archive.vospace.persistence.dao.impl.DataMngLogDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="groupControlDao" class="esac.archive.vospace.persistence.dao.impl.GroupControlDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="metadataRetrievalLogDao" class="esac.archive.vospace.persistence.dao.impl.MetadataRetrievalLogDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="shareLogDao" class="esac.archive.vospace.persistence.dao.impl.ShareLogDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="transferLogDao" class="esac.archive.vospace.persistence.dao.impl.TransferLogDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="userControlDao" class="esac.archive.vospace.persistence.dao.impl.UserControlDaoImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+
+&absi-spring-dao-config;
+
+</beans>

@@ -1,0 +1,220 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/security 
+                        http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <!-- Rest entry point for Apps. Auth with Proxy ticket. -->        
+    <http entry-point-ref="restfulCasEntryPoint" pattern="/rest/**" create-session="stateless" use-expressions="true">
+       <headers>
+           <frame-options policy="SAMEORIGIN"/>
+       </headers>
+       <csrf disabled="true"/>
+       <!-- <intercept-url pattern="/**" access="isFullyAuthenticated()" requires-channel="https"/> -->
+       <custom-filter ref="restfulCasFilter" position="CAS_FILTER" />              
+    </http>
+    <!-- Rest entry point for Apps. Auth with Proxy ticket. -->
+      
+    <!-- Rest entry point for users. Auth with user/pass. -->        
+    <http entry-point-ref="restfulEntry" pattern="/servlet/**" create-session="stateless"><!-- use-expressions="true" -->
+       <!-- <headers>
+           <frame-options policy="SAMEORIGIN"/>
+       </headers> -->
+       <csrf disabled="true"/>
+       <!-- <intercept-url pattern="/**" access="isFullyAuthenticated()" requires-channel="http"/> -->
+       <custom-filter ref="customBasicAuthFilter" before="BASIC_AUTH_FILTER"/>
+    </http>
+    
+    <beans:bean id="restfulEntry" class="esavo.vospace.service.security.restful.auth.RestAuthenticationEntryPoint"/>       
+    
+    <beans:bean id="customBasicAuthFilter" class="esavo.vospace.service.security.restful.auth.filter.CustomBasicAuthFilter">
+        <beans:constructor-arg ref="authenticationManager" />
+        <beans:constructor-arg ref="authenticationEntryPoint" />
+    </beans:bean>
+    
+    <beans:bean id="authenticationEntryPoint" class="esavo.vospace.service.security.restful.auth.CustomBasicAuthenticationEntryPoint">
+      <beans:property name="realmName" value="Name Of Your Realm"/>
+    </beans:bean>
+    <!-- Rest entry point for users. Auth with user/pass. -->
+    
+    <beans:bean id="userDetailsService"
+        class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
+        <beans:constructor-arg ref="userSearch" />
+        <beans:constructor-arg ref="ldapAuthoritiesPopulator" />
+    </beans:bean>
+    
+    <!-- LOGIN -->
+    <beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+        <beans:property name="service"
+            value="@cas.service.url@/j_spring_cas_security_check" />
+        <beans:property name="sendRenew" value="false" />
+        <beans:property name="authenticateAllArtifacts" value="true"/>
+    </beans:bean>
+    
+    <beans:bean id="restfulCasFilter"
+        class="org.springframework.security.cas.web.CasAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <!-- Proxy ticket -->
+        <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>
+        <beans:property name="proxyReceptorUrl" value="/j_spring_cas_security_proxyreceptor"/>        
+        <beans:property name="serviceProperties" ref="serviceProperties"/>
+        <beans:property name="authenticationDetailsSource">
+            <beans:bean class="org.springframework.security.cas.web.authentication.ServiceAuthenticationDetailsSource">
+                  <beans:constructor-arg ref="serviceProperties"/>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+        
+    <!-- Authentication managers -->
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="casAuthenticationProvider" />
+        <authentication-provider ref="ldapProvider"/>
+    </authentication-manager>
+    
+    <beans:bean id="casEntryPoint"
+        class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+        <beans:property name="loginUrl" value="@cas.server.url@/cas/login" />
+        <beans:property name="serviceProperties" ref="serviceProperties" />
+    </beans:bean>
+    
+    <beans:bean id="restfulCasEntryPoint"
+        class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+        <beans:property name="loginUrl" value="@cas.server.url@/cas/v1" />
+        <beans:property name="serviceProperties" ref="serviceProperties" />
+    </beans:bean>
+            
+    <beans:bean id="pgtStorage" class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl"/>
+    
+    <beans:bean id="casAuthenticationProvider"
+        class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+        <beans:property name="authenticationUserDetailsService">
+            <beans:bean
+                class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+                <beans:constructor-arg ref="userDetailsService" />
+            </beans:bean>
+        </beans:property>        
+        <beans:property name="serviceProperties" ref="serviceProperties" />
+        <beans:property name="ticketValidator">            
+            <beans:bean class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
+              <beans:constructor-arg index="0" value="@cas.server.url@/cas"/>
+                <beans:property name="acceptAnyProxy" value="true" />
+                <beans:property name="proxyCallbackUrl" 
+                        value="@cas.service.url@/j_spring_cas_security_proxyreceptor"/>
+                <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>
+            </beans:bean>
+        </beans:property>
+        <!-- <beans:property name="statelessTicketCache">
+              <beans:bean class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">
+                <beans:property name="cache">
+                  <beans:bean id="ehcache" class="net.sf.ehcache.Cache" init-method="initialise" destroy-method="dispose">
+                    <beans:constructor-arg value="casTickets"/>
+                    <beans:constructor-arg value="50"/>
+                    <beans:constructor-arg value="true"/>
+                    <beans:constructor-arg value="false"/>
+                    <beans:constructor-arg value="3600"/>
+                    <beans:constructor-arg value="900"/>
+                    <beans:property name="cacheManager">
+                        <beans:bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+                    </beans:property>
+                  </beans:bean>
+                </beans:property>
+              </beans:bean>
+            </beans:property> -->
+        <beans:property name="key" value="klqejr94jfqkljr84ujkqjr4884klfu48rlelpmv99" />
+    </beans:bean>
+    
+    <!-- Black magic to make sync/async threads work with springsecuirty 4.0 in command line  -->
+    <beans:bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <beans:property name="targetClass" value="org.springframework.security.core.context.SecurityContextHolder" />
+        <beans:property name="targetMethod" value="setStrategyName" />
+        <beans:property name="arguments">
+               <beans:list>
+                      <beans:value>MODE_INHERITABLETHREADLOCAL</beans:value>
+                </beans:list>
+        </beans:property>
+    </beans:bean>    
+    
+    <!-- Exclude the login page from the sessionManagementFilter -->
+    <!-- <http pattern="/login.jsp" security="none"/>
+    <http auto-config="true">
+        <custom-filter ref="sessionManagementFilter" before="SESSION_MANAGEMENT_FILTER" />
+        <intercept-url pattern="/service/**" access="IS_AUTHENTICATED_REMEMBERED" requires-channel="http"/> 
+        <intercept-url pattern="/index.jsp" access="IS_AUTHENTICATED_REMEMBERED" requires-channel="http"/>
+        <intercept-url pattern="/login.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="http"/>
+        <form-login login-page="/login.jsp" default-target-url="/" authentication-failure-url="/login.jsp?login_error" authentication-success-handler-ref="customAuthenticationSuccessHandler"/>
+        <logout invalidate-session="true" logout-success-url="/login.jsp" delete-cookies="JSESSIONID"/>
+        <anonymous />        
+        <session-management invalid-session-url="/login.jsp" >
+                <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="/login.jsp" />
+        </session-management>
+    </http> -->
+        
+    
+        
+    <!-- Simple namespace-based configuration -->
+    <ldap-server url="@ldap.server@"/>        
+        <beans:bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+          <beans:constructor-arg ref="sessionRegistry" />
+        </beans:bean>
+        
+        <beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+        <beans:bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+                <beans:constructor-arg>
+                <beans:list>
+                        <beans:bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+                                <beans:constructor-arg ref="sessionRegistry"/>
+                                <beans:property name="maximumSessions" value="1" />
+                                <beans:property name="exceptionIfMaximumExceeded" value="true" />
+                        </beans:bean>
+                        <beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy"/>
+                        <beans:bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+                                <beans:constructor-arg ref="sessionRegistry"/>
+                        </beans:bean>
+                </beans:list>
+                </beans:constructor-arg>
+        </beans:bean>
+    
+    <beans:bean id="sessionManagementFilter" class="org.springframework.security.web.session.SessionManagementFilter">
+          <beans:constructor-arg name="securityContextRepository" ref="httpSessionSecurityContextRepository" />
+          <beans:property name="invalidSessionStrategy">
+            <beans:bean id="invalidSessionStrategy" class="esavo.vospace.service.security.session.auth.filter.JsfRedirectStrategy"/>
+          </beans:property>
+        </beans:bean>
+        
+    <beans:bean id="httpSessionSecurityContextRepository" class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/>
+    
+    <!-- This bean points at the embedded directory server created by the ldap-server element above  -->
+    <beans:bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <beans:constructor-arg value="@ldap.server@"/>  <!-- 389, 636  -->
+        <beans:property name="userDn" value="@ldap.usr@"/>
+        <beans:property name="password" value="@ldap.pwd@"/>
+    </beans:bean>
+    
+    <beans:bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+        <beans:constructor-arg index="0" value="ou=people,o=esa.nl"/>
+        <beans:constructor-arg index="1" value="(uid={0})"/>
+        <beans:constructor-arg index="2" ref="contextSource" />
+    </beans:bean>
+    
+    <beans:bean id="ldapAuthoritiesPopulator" class="esavo.vospace.service.security.CustomLdapAuthoritiesPopulator">
+        <beans:constructor-arg ref="contextSource" />
+        <beans:constructor-arg value="ou=people,o=esa.nl" />
+    </beans:bean>
+    
+    <beans:bean id="ldapProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+        <beans:constructor-arg>
+            <beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <beans:constructor-arg ref="contextSource" />                
+                <beans:property name="userSearch" ref="userSearch"/>
+            </beans:bean>
+        </beans:constructor-arg>
+        <beans:constructor-arg ref="ldapAuthoritiesPopulator" />        
+        <beans:property name="userDetailsContextMapper">
+            <beans:bean class="esavo.vospace.service.security.CustomUserDetailsContextMapper" />
+        </beans:property>
+    </beans:bean>
+    <beans:bean id="customAuthenticationSuccessHandler" class="esavo.vospace.service.security.session.auth.filter.CustomAuthenticationSuccessHandler"/>
+</beans:beans>

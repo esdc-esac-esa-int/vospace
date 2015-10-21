@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+
+    <info revision="0.4" status="release" organisation="esa" e:project="esavo" e:layer="vospace"
+        e:component="ifsd" module="esavo-vospace-ifsd">
+        <description homepage="http://satscm.esac.esa.int/redmine/projects/euclid">
+            Vospace Ifsd model
+        </description>
+    </info>
+    <configurations />
+
+    <publications>
+        <artifact name="esavo-vospace-ifsd" type="jar" ext="jar" />
+    </publications>
+
+    <dependencies>
+
+        <!-- External libraries -->
+        <dependency org="junit" name="junit" rev="4.10" force="false" transitive="true" />
+        <dependency org="checkstyle" name="checkstyle-no-deps" rev="4.4" force="false"
+            transitive="true" />
+
+        <!-- ABSI libraries -->
+        <dependency e:project="absi" e:layer="ifsd" e:component="model-api" name="absi-ifsd-model-api"
+            rev="1.6" force="false" transitive="true" />
+
+        <!-- Vospace libraries -->
+        <dependency e:project="esavo" e:layer="vospace" e:component="model" name="esavo-vospace-model"
+            rev="0.6" force="true" transitive="true" />
+
+    </dependencies>
+</ivy-module>

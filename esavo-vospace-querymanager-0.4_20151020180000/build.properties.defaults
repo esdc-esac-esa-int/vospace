@@ -1,0 +1,68 @@
+# build.properties.defaults
+#
+# Vospace DL Query Handler
+# Copyright (C) 2011  ESA - ESAC - Madrid, Spain
+
+### software name & version
+software.name=esavo-vospace-querymanager
+software.version=X.x
+
+# Name of the global component
+component.name=esavo-vospace-querymanager
+component.version=${software.version}
+
+### compiler flags & options
+javac.source=1.6
+javac.target=1.6
+javac.compiler=javac1.6
+
+javac.nowarn=false
+javac.debug=true
+javac.deprec=true
+
+### archiver flags & options
+jar.compress=true
+jar.index=true
+jar.update=false
+
+### junit flags & options
+junit.summary=true
+junit.output=false
+junit.halt=false
+
+### javadoc flags & options
+javadoc.packages=*
+javadoc.access=protected
+javadoc.fail=true
+
+### checkstyle flags & options
+checkstyle.config=setup/sun_checks.xml
+checkstyle.fail=false
+checkstyle.style=setup/checkstyle.xsl
+lib.checkstyle.jar=lib/checkstyle-4.4.jar
+
+### conf & java directories
+conf.dir=src/conf
+conf.manifest.file=${conf.dir}/MANIFEST.MF
+java.dir=src/java
+log4j.properties.file=${conf.dir}/log4j.properties
+server.properties.file=${conf.dir}/QueryManager.properties
+
+### build & dist directories
+build.dir=build
+build.classes.dir=${build.dir}/classes
+build.javadoc.dir=${build.dir}/javadoc
+build.testclass.dir=${build.dir}/testclass
+build.jureport.dir=${build.dir}/jureport
+build.csreport.dir=${build.dir}/csreport
+
+bin.dir=bin
+dist.dir=dist
+dist.jar.file=${dist.dir}/${software.name}-${software.version}.jar
+final.dir=final
+logs.dir=logs
+log4j.logs=${logs.dir}
+lib.dir=lib
+
+## Vospace prefix
+vospace.prefix=vos://esavo!vospace

@@ -1,0 +1,9 @@
+# build.properties.dev
+#
+# Vospace Data Layer - Data Access Objects module
+# Copyright (C) 2014  ESA - ESAC - Madrid, Spain
+
+# DEV persistence setup
+db.url=xxx
+db.user=xxx
+db.pwd=xxx

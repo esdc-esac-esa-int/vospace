@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+
+    <type-mapping>
+        <sql-type jdbc-type="INTEGER" hibernate-type="java.lang.Integer" not-null="true"></sql-type>
+        <sql-type jdbc-type="BIGINT" hibernate-type="java.lang.Long"></sql-type>
+        <sql-type jdbc-type="CHAR" hibernate-type="java.lang.String"></sql-type>
+        <sql-type jdbc-type="DOUBLE" hibernate-type="java.lang.Double"></sql-type>
+        <sql-type jdbc-type="REAL" hibernate-type="java.lang.Double"></sql-type>
+
+        <!-- This will map the CITEXT type to String!! -->
+        <!-- Also Scircle and Spoint will map to String!! -->
+        <sql-type jdbc-type="OTHER" hibernate-type="java.lang.String"></sql-type>
+
+    </type-mapping>
+
+    <!-- ================================== -->
+    <!-- Include the following tables -->
+    <!-- ================================== -->
+    
+    
+    <table-filter match-schema="vos" match-name="node" />
+    <table-filter match-schema="vos" match-name="link_node" />
+    <table-filter match-schema="vos" match-name="data_node" />
+    <table-filter match-schema="vos" match-name="container_node" />
+    <table-filter match-schema="vos" match-name="unstructured_data_node" />
+    <table-filter match-schema="vos" match-name="structured_data_node" />
+    <table-filter match-schema="vos" match-name="vospace" />
+    <table-filter match-schema="vos" match-name="vo_property" />
+    <table-filter match-schema="vos" match-name="vo_protocol" />
+    <table-filter match-schema="vos" match-name="protocol_param" />
+    <table-filter match-schema="vos" match-name="vo_capability" />
+    <table-filter match-schema="vos" match-name="capability_param" />
+    <table-filter match-schema="vos" match-name="vo_view" />
+    <table-filter match-schema="vos" match-name="view_param" />
+    <table-filter match-schema="vos" match-name="node_property" />
+    <table-filter match-schema="vos" match-name="user_node_property" />
+    <table-filter match-schema="vos" match-name="group_node_property" />
+    <table-filter match-schema="vos" match-name="share_user" />
+    <table-filter match-schema="vos" match-name="share_group" />
+    <table-filter match-schema="vos" match-name="node_capability" />
+    <table-filter match-schema="vos" match-name="node_view" />    
+    <table-filter match-schema="vos" match-name="users" />
+    <table-filter match-schema="vos" match-name="groups" />
+    <table-filter match-schema="vos" match-name="user_group" />
+    <!-- <table-filter match-schema="vos" match-name="role" />
+    <table-filter match-schema="vos" match-name="share_user" />
+    <table-filter match-schema="vos" match-name="share_group" /> -->
+    
+    <!-- ================================== -->
+    <!-- Use sequences as primary keys -->
+    <!-- ================================== -->
+
+    <table schema="vos" name="share_user">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">share_user_share_user_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="share_group">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">share_group_share_group_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+
+    <table schema="vos" name="groups">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">group_group_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+
+    <table schema="vos" name="node">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">node_node_oid_seq</param>
+            </generator>
+        </primary-key>
+        
+        <!-- ============================================================================ -->
+        <!-- Step 1 for inheritance -->
+        <!-- Mark foreign keys from children to parent -->
+        <!-- ============================================================================ -->
+
+        <foreign-key constraint-name="link_node_id_fk">
+            <one-to-one exclude="true" />
+            <inverse-one-to-one exclude="true" />
+        </foreign-key>
+
+        <foreign-key constraint-name="data_node_id_fk">
+            <one-to-one exclude="true" />
+            <inverse-one-to-one exclude="true" />
+        </foreign-key>
+    </table>
+    
+    <!-- ============================================================================ -->
+    <!-- Step 2: assign an empty generator to avoid the primary key from -->
+    <!-- See http://satscm.esac.esa.int/trac/ABSI/wiki/QueryManagerAndInheritance -->
+    <!-- appearing in the constructor methods... -->
+    <!-- ============================================================================ -->
+    <table schema="vos" name="link_node">
+        <primary-key>
+            <generator class=""></generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="data_node">
+        <primary-key>
+            <generator class=""></generator>
+        </primary-key>
+        
+        <foreign-key constraint-name="container_node_id_fk">
+            <one-to-one exclude="true" />
+            <inverse-one-to-one exclude="true" />
+        </foreign-key>
+
+        <foreign-key constraint-name="unstructured_data_node_id_fk">
+            <one-to-one exclude="true" />
+            <inverse-one-to-one exclude="true" />
+        </foreign-key>
+        
+        <foreign-key constraint-name="structured_data_node_id_fk">
+            <one-to-one exclude="true" />
+            <inverse-one-to-one exclude="true" />
+        </foreign-key>
+    </table>
+    
+    <table schema="vos" name="container_node">
+        <primary-key>
+            <generator class=""></generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="unstructured_data_node">
+        <primary-key>
+            <generator class=""></generator>
+        </primary-key>
+    </table>
+    <table schema="vos" name="structured_data_node">
+        <primary-key>
+            <generator class=""></generator>
+        </primary-key>
+    </table>
+
+    <table schema="vos" name="users">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">user_user_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="vo_capability">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">vo_capability_vo_capability_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+
+    <table schema="vos" name="vo_property">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">vo_property_vo_property_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+
+    <table schema="vos" name="vo_protocol">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">vo_protocol_vo_protocol_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="vo_view">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">vo_view_vo_view_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="vospace">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">vospace_vospace_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="user_group">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">user_group_user_group_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="node_property">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">node_property_node_property_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="group_node_property">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">group_node_property_group_node_property_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="user_node_property">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">user_node_property_user_node_property_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="node_capability">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">node_capability_node_capability_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="node_view">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">node_view_node_view_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <!-- <table schema="vos" name="share_user">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">share_user_share_user_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="share_group">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">share_group_share_group_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table> -->
+    
+    <table schema="vos" name="capability_param">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">capability_param_capability_param_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="protocol_param">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">protocol_param_protocol_param_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+    
+    <table schema="vos" name="view_param">
+        <primary-key>
+            <generator class="sequence">
+                <param name="sequence">view_param_view_param_oid_seq</param>
+            </generator>
+        </primary-key>
+    </table>
+
+</hibernate-reverse-engineering>

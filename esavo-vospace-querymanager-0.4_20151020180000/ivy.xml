@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+
+	<info revision="0.3" status="release" 
+		organisation="esa" e:project="esavo" e:layer="vospace" 
+		e:component="querymanager" module="esavo-vospace-querymanager">
+		<description homepage="http://satscm.esac.esa.int/">
+			Vpspace dl query manager
+		</description>
+	</info>
+	<configurations>
+      <conf name="master" visibility="public" description="Only the main artifact, no transitive dependencies"/>
+      <conf name="runtime" visibility="public" description="Everything needed to run this module" extends="master"/>
+      <conf name="default" visibility="public" description="Default configuration is runtime" extends="runtime"/>
+      <conf name="test" visibility="private" description="Test dependencies" extends="runtime" />
+   </configurations>
+	<publications>
+	 	<artifact name="esavo-vospace-querymanager" type="tar" ext="tar" conf="master"/>
+	</publications>
+	<dependencies> 
+		<!-- Test libraries -->
+	 	<dependency org="junit" name="junit" rev="4.10" force="false" transitive="true" conf="test->default"/>
+	 	<dependency org="checkstyle" name="checkstyle-no-deps" rev="4.4" force="false" transitive="true" conf="test->default"/>
+
+      <!-- External libraries -->
+	 	<dependency org="log4j" name="log4j" rev="1.2.16" force="false" transitive="true"/>
+	 	<dependency org="commons-logging" name="commons-logging" rev="1.1.1" force="false" transitive="true"/>
+	 	<dependency org="org.hibernate" name="hibernate-core" rev="4.2.16.Final" force="false" transitive="true"/>
+	 	<dependency org="c3p0" name="c3p0" rev="0.9.1" force="true" transitive="true"/>
+	 	<dependency org="org.springframework" name="spring-core" rev="3.2.6.RELEASE" force="false" transitive="true"/>
+	 	<dependency org="org.springframework" name="spring-aop" rev="3.2.6.RELEASE" force="false" transitive="true"/>
+	 	<dependency org="org.springframework" name="spring-context" rev="3.2.6.RELEASE" force="false" transitive="true" />
+	 	<dependency org="org.springframework" name="spring-expression" rev="3.2.6.RELEASE" force="false" transitive="true" />
+	 	<dependency org="net.sf.dozer" name="dozer" rev="5.3.2" force="false" transitive="true" />
+
+		<!-- Absi libraries -->
+	 	<!-- <dependency e:project="absi" e:layer="common" 
+	 		e:component="countryresolver-module" name="absi-common-countryresolver-module" rev="0.1.1" force="false" transitive="true"/> -->
+	 	<dependency e:project="absi" e:layer="common" 
+	 		e:component="querybean-module" name="absi-common-querybean-module" rev="1.1" force="false" transitive="true"/>
+	 	<dependency e:project="absi" e:layer="common" 
+	 		e:component="transferobjects-api" name="absi-common-transferobjects-api" rev="0.9" force="false" transitive="true"/>
+	 	<dependency e:project="absi" e:layer="common" 
+	 		e:component="entitymodel-api" name="absi-common-entitymodel-api" rev="0.6" force="false" transitive="true"/>
+	 	<dependency e:project="absi" e:layer="common" 
+	 		e:component="resultbean-module" name="absi-common-resultbean-module" rev="0.5.2" force="false" transitive="true"/>
+	 	<dependency e:project="absi" e:layer="ifsd" 
+	 		e:component="model-api" name="absi-ifsd-model-api" rev="1.6" force="false" transitive="true"/>
+	 	<dependency e:project="absi" e:layer="dl" 
+	 		e:component="querymanager-api" name="absi-dl-querymanager-api" rev="2.3" force="false" transitive="true"/>
+         
+		<!-- Vospace libraries -->
+	 	<dependency e:project="esavo" e:layer="vospace" 
+	 		e:component="model" name="esavo-vospace-model" rev="0.6" force="true" transitive="true"/>
+	 	<dependency e:project="esavo" e:layer="vospace" 
+	 		e:component="entitymodel" name="esavo-vospace-entitymodel" rev="0.4" force="false" transitive="true"/>
+	 	<dependency e:project="esavo" e:layer="vospace" 
+	 		e:component="dao" name="esavo-vospace-dao" rev="0.6" force="false" transitive="true"/>
+	 	<dependency e:project="esavo" e:layer="vospace" e:component="ifsd" name="esavo-vospace-ifsd"
+            rev="0.4" force="false" transitive="true" />
+	 	<dependency e:project="esavo" e:layer="vospace" e:component="constants" name="esavo-vospace-constants"
+            rev="0.1" force="false" transitive="true" />
+	 	
+	</dependencies>
+	
+</ivy-module>

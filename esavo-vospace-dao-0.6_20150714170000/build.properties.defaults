@@ -1,0 +1,64 @@
+# build.properties
+#
+# VOSpace Data Layer - Data Access Objects module
+# Copyright (C) 2014  ESA - ESAC - Madrid, Spain
+
+# Properties file for Ant project file
+
+### software name & version
+software.name=esavo-vospace-dao
+software.version=X.x
+
+### compiler flags & options
+javac.source=1.6
+javac.target=1.6
+javac.compiler=javac1.6
+
+javac.nowarn=false
+javac.debug=true
+javac.deprec=true
+
+### archiver flags & options
+jar.compress=true
+jar.index=true
+jar.update=false
+
+### junit flags & options
+junit.summary=true
+junit.output=false
+junit.halt=false
+
+### javadoc flags & options
+javadoc.packages=*
+javadoc.access=protected
+javadoc.fail=true
+
+### checkstyle flags & options
+checkstyle.config=setup/sun_checks.xml
+checkstyle.fail=false
+checkstyle.style=setup/checkstyle.xsl
+lib.checkstyle.jar=lib/checkstyle-4.4.jar
+
+### conf & java directories
+conf.dir=src/conf
+conf.manifest.file=${conf.dir}/MANIFEST.MF
+java.dir=src/java
+
+### build & dist directories
+build.dir=build
+build.classes.dir=${build.dir}/classes
+build.javadoc.dir=${build.dir}/javadoc
+build.testclass.dir=${build.dir}/testclass
+build.jureport.dir=${build.dir}/jureport
+build.csreport.dir=${build.dir}/csreport
+
+logs.dir=logs
+dist.dir=dist
+lib.dir=lib
+final.dir=final
+ 
+# Persistence configuration file (spring)
+persistence.spring.file=${build.classes.dir}/esac/archive/vospace/persistence/hibernate.cfg.xml
+
+# log4j configuration file & logs
+log4j.configuration.file=${build.classes.dir}/log4j.properties

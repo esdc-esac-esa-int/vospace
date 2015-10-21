@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//Spring//DTD Bean//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!--###################################################-->
+	<!--##########       Remoting services      ###########-->
+	<!--###################################################-->
+
+	<bean id="managementService" class="esavo.vospace.dl.querymanager.service.VospaceQueryManagerImpl">
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="serviceName" value="QueryManagerService" />
+		<property name="service" ref="managementService" />
+		<property name="serviceInterface" value="esavo.vospace.ifsd.model.actions.IQueryManagerVospace"/>	
+		<!-- Defaults to 1099	 -->
+		<property name="registryPort" value="3001" />
+		<!-- Defaults to 0 (dynamic)	 -->
+		<property name="servicePort" value="3002" />		
+	</bean>
+
+</beans>
+

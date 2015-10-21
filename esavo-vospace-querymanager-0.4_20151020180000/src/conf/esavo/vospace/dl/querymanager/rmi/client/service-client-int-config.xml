@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//Spring//DTD Bean//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!--###############################################################-->
+	<!--########## Client (QueryManager) Int Remoting services #######-->
+	<!--###############################################################-->
+
+	<bean id="queryManagerService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"	value="rmi://localhost:3021/QueryManagerService" />
+		<property name="serviceInterface" value="esavo.vospace.ifsd.model.actions.IQueryManagerVospace" />
+		<property name="refreshStubOnConnectFailure" value="true"></property>
+	</bean>
+
+</beans>
+

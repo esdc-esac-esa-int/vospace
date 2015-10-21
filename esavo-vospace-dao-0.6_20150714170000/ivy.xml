@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+
+    <info revision="0.6" status="release" organisation="esa" e:project="esavo" e:layer="vospace"
+        e:component="dao" module="esavo-vospace-dao">
+        <description homepage="http://satscm.esac.esa.int/redmine/projects/euclid">
+            Vospace Data Access Objects
+        </description>
+    </info>
+
+    <configurations />
+
+    <publications>
+        <artifact name="esavo-vospace-dao" type="jar" ext="jar" />
+    </publications>
+
+    <dependencies>
+
+        <!-- External libraries -->
+        <dependency org="junit" name="junit" rev="4.10" force="false" transitive="true" />
+        <dependency org="checkstyle" name="checkstyle-no-deps" rev="4.4" force="false"
+            transitive="true" />
+        <dependency org="log4j" name="log4j" rev="1.2.16" force="false" transitive="true" />
+        <dependency org="commons-logging" name="commons-logging" rev="1.1.1" force="false"
+            transitive="true" />
+        <dependency org="org.springframework" name="spring-context" rev="3.2.6.RELEASE"
+            force="false" transitive="true" />
+        <dependency org="org.springframework" name="spring-orm" rev="3.2.6.RELEASE"
+            force="false" transitive="true" />
+        <dependency org="org.springframework" name="spring-tx" rev="3.2.6.RELEASE" force="false"
+            transitive="true" />
+        <dependency org="org.springframework" name="spring-beans" rev="3.2.6.RELEASE"
+            force="false" transitive="true" />
+        <dependency org="org.springframework" name="spring-core" rev="3.2.6.RELEASE"
+            force="false" transitive="true" />
+        <dependency org="org.springframework" name="spring-expression" rev="3.2.6.RELEASE"
+            force="false" transitive="true" />
+        <dependency org="org.springframework" name="spring-jdbc" rev="3.2.6.RELEASE"
+            force="false" transitive="true" />
+        <dependency org="postgresql" name="postgresql" rev="9.2-1000.jdbc4" force="false"
+            transitive="true" />
+        <dependency org="org.hibernate" name="hibernate-core" rev="4.2.16.Final" force="false"
+            transitive="true" />
+        <dependency org="org.hibernate" name="hibernate-c3p0" rev="4.2.16.Final" force="false"
+            transitive="true" />
+        <dependency org="c3p0" name="c3p0" rev="0.9.1" force="true" transitive="true" />
+        <dependency org="org.hibernate" name="hibernate-ehcache" rev="4.2.16.Final" force="false"
+            transitive="true" />
+        <dependency org="org.jasypt" name="jasypt" rev="1.9.2" force="false" transitive="true" />
+        <dependency org="org.jasypt" name="jasypt-hibernate4" rev="1.9.2" force="false" transitive="true" />
+
+        <!-- ABSI libraries -->
+        <dependency e:project="absi" e:layer="dl" e:component="dao-api" name="absi-dl-dao-api"
+            rev="3.0" force="false" transitive="true" />
+
+    </dependencies>
+
+</ivy-module>

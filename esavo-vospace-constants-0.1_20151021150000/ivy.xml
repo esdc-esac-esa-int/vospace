@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+
+	<info revision="0.1" status="release" 
+		organisation="esa" e:project="esavo" e:layer="vospace" 
+		e:component="constants" module="esavo-vospace-constants">
+		<description homepage="http://satscm.esac.esa.int/redmine/projects/euclid">
+			Constants for Euclid Archive Core System components
+		</description>
+	</info>
+	<configurations/>
+	<publications>
+	 	<artifact name="esavo-vospace-constants" type="jar" ext="jar"/>
+	</publications>
+	<dependencies> 
+		<!-- External libraries -->
+	 	<dependency org="junit" name="junit" rev="4.5" force="false" transitive="true"/>
+	 	<dependency org="checkstyle" name="checkstyle-no-deps" rev="4.4" force="false" transitive="true"/>
+	 	
+	 	<dependency e:project="esavo" e:layer="vospace" e:component="exceptions" 
+            name="esavo-vospace-exceptions" rev="0.3" force="false" transitive="true" />
+	</dependencies>
+	
+</ivy-module>

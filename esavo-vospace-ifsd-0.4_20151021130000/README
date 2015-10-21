@@ -1,0 +1,49 @@
+
+        Component Description
+      ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO 
+
+
+        Directory Structure
+      ~~~~~~~~~~~~~~~~~~~~~~~
+
+build/
+        Contains the compiled 'classes' and the generated 'javadoc' files.
+        This directory should not be included in version control (Subversion).
+
+dist/
+        Contains the distributable Component JAR package.
+        This directory should not be included in version control (Subversion).
+
+docs/
+        General documentation for the Component (description, instructions, ...)
+
+lib/
+        External libraries specifically required by this Component.
+        The filename should include the version as such: libname-vX.x.jar
+
+setup/
+        Component setup files include server configuration, database creation, ...
+
+src/conf/
+        The config files include the manifest file and other dynamic configurations.
+
+src/java/
+        The Java sources in packages: esac.archive.absi.tmpl.component[.whatever]
+
+test/
+        Component test files include the JUnit test sources in parallel packages.
+
+build.properties
+        User specific build property file. Supersedes the sample property file.
+        This file should not be included in version control (Subversion).
+
+build.properties.sample
+        Sample build property file. Defines the properties for a standard build.
+
+build.xml
+        ANT build script for the Component. Run 'ant -projecthelp' for more info.
+
+README
+        This file. Describes the Component and its directory structure.

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">@dbUrlToken@</property>
+        <property name="hibernate.connection.username">@dbUsrToken@</property>
+        <property name="hibernate.connection.password">@dbPwdToken@</property>
+        <property name="hibernate.default_schema">vos</property>
+
+        <property name="hibernate.dialect">esac.archive.vospace.persistence.dialect.PostgreSQLExtendedDialect</property>
+
+        <!-- Connection pooling!! -->
+        <!-- https://community.jboss.org/wiki/HowToConfigureTheC3P0ConnectionPool -->
+        <!-- Encrypt password... http://www.jasypt.org/hibernate.html -->
+        <property name="hibernate.connection.provider_class">org.jasypt.hibernate4.connectionprovider.EncryptedPasswordC3P0ConnectionProvider</property>
+        <property name="hibernate.connection.encryptor_registered_name">configurationHibernateEncryptor</property>
+        <!-- Hibernate 4.1 -->
+        <!-- <property name="connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
+        <!-- Hibernate 4.3 -->
+        <!-- <property name="connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider</property> -->
+
+        <property name="hibernate.c3p0.acquire_increment">1</property>
+        <property name="hibernate.c3p0.idle_test_period">50</property><!-- seconds -->
+        <property name="hibernate.c3p0.max_size">50</property>
+        <property name="hibernate.c3p0.max_statements">50</property>
+        <property name="hibernate.c3p0.min_size">10</property>
+        <property name="hibernate.c3p0.timeout">100</property> <!-- seconds -->
+
+        <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+
+        <!-- To make consistent our inserts and database ids!! -->
+        <!-- http://stackoverflow.com/questions/12745751/hibernate-sequencegenerator-and-allocationsize -->
+        <!-- <property name="hibernate.id.new_generator_mappings">true</property> -->
+
+        <!-- Remove this line, Setting it to 'thread' is disabling the spring integration. -->
+        <!-- http://forum.springsource.org/showthread.php?80956-org-hibernate-HibernateException-get-is-not-valid-without-active-transaction -->
+        <!-- <property name="current_session_context_class">thread</property> -->
+
+        <!-- Do not print a lot of SQL to stdout -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">false</property>
+        <property name="use_sql_comments">false</property>
+        
+        <!-- Disable validation in Hibernate 3.6 (otherwise we'll need hibernate-validator
+            in the path) -->
+        <property name="javax.persistence.validation.mode">none</property>
+
+        <!-- Enable the cache, and using config file. -->
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</property>
+        <property name="net.sf.ehcache.configurationResourceName">esac/archive/vospace/persistence/ehcache.xml</property>
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.use_query_cache">true</property>
+
+        <!-- If enabled, Hibernate adds an item to the cache only after checking -->
+        <!-- to ensure that the item isn't already cached. This performs better -->
+        <!-- if cache writes (puts) are much more expensive than cache reads (gets). -->
+        <!-- This is the case for a replicated cache in a cluster, but not for a -->
+        <!-- local cache. -->
+        <property name="cache.use_minimal_puts">false</property>
+
+        <!-- Enable auto-commit mode for special cases (integration testing) -->
+        <property name="connection.autocommit">false</property>
+
+        <!-- ==================================== -->
+        <!-- Xml files mapping -->
+        <!-- ==================================== -->
+        <!-- vospace database -->
+        <mapping class="esac.archive.vospace.persistence.model.Groups" />
+        <mapping class="esac.archive.vospace.persistence.model.Node" />
+        <mapping class="esac.archive.vospace.persistence.model.LinkNode" />
+        <mapping class="esac.archive.vospace.persistence.model.DataNode" />
+        <mapping class="esac.archive.vospace.persistence.model.ContainerNode" />
+        <mapping class="esac.archive.vospace.persistence.model.StructuredDataNode" />
+        <mapping class="esac.archive.vospace.persistence.model.UnstructuredDataNode" />      
+        <mapping class="esac.archive.vospace.persistence.model.NodeProperty" />
+        <mapping class="esac.archive.vospace.persistence.model.UserNodeProperty" />
+        <mapping class="esac.archive.vospace.persistence.model.GroupNodeProperty" />
+        <mapping class="esac.archive.vospace.persistence.model.Users" />
+        <mapping class="esac.archive.vospace.persistence.model.VoCapability" />        
+        <mapping class="esac.archive.vospace.persistence.model.CapabilityParam" />
+        <mapping class="esac.archive.vospace.persistence.model.VoProperty" />        
+        <mapping class="esac.archive.vospace.persistence.model.VoProtocol" />
+        <mapping class="esac.archive.vospace.persistence.model.ProtocolParam" />
+        <mapping class="esac.archive.vospace.persistence.model.VoView" />        
+        <mapping class="esac.archive.vospace.persistence.model.ViewParam" />
+        
+        <!-- vospace controls database -->
+        <mapping class="esac.archive.vospace.persistence.model.controls.AccessLog" />
+        <mapping class="esac.archive.vospace.persistence.model.controls.DataMngLog" />
+        <mapping class="esac.archive.vospace.persistence.model.controls.Group" />
+        <mapping class="esac.archive.vospace.persistence.model.controls.MetadataRetrievalLog" />
+        <mapping class="esac.archive.vospace.persistence.model.controls.ShareLog" />
+        <mapping class="esac.archive.vospace.persistence.model.controls.TransferLog" />
+        <mapping class="esac.archive.vospace.persistence.model.controls.User" />
+        
+        
+        <!-- ==================================== -->
+        <!-- Enable Second Level cache per class -->
+        <!-- ==================================== -->
+        <!-- vospace -->
+        <class-cache class="esac.archive.vospace.persistence.model.Groups" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.Node" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.Users" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.VoCapability" usage="read-write" />        
+        <class-cache class="esac.archive.vospace.persistence.model.VoProperty" usage="read-write" />        
+        <class-cache class="esac.archive.vospace.persistence.model.VoProtocol" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.VoView" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.ViewParam" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.CapabilityParam" usage="read-write" />
+        <class-cache class="esac.archive.vospace.persistence.model.ProtocolParam" usage="read-write" />
+        
+        
+    </session-factory>
+
+</hibernate-configuration>

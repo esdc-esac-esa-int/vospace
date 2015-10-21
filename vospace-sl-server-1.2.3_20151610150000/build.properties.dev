@@ -1,0 +1,100 @@
+# build.properties.dev
+#
+# vospace  - VOSpace Server
+# Copyright (C) 2013-  ESA - ESAC - Madrid, Spain
+
+### local target flags & options
+server.host=
+server.user=
+server.user.home=/home/${server.user}
+###server.instdir=${server.user.home}/tomcat
+server.instdir=${server.user.home}/vospaceComponents
+server.context=vospace-service
+server.url=https://${server.host}:8443/${server.context}/
+
+### CAS conf
+cas.service.url=
+cas.server.url=
+
+### LDAP conf
+#ldap.server=ldap://xxx
+
+## Server application home folder
+catalina.base=
+
+service.client.file=esavo/vospace/service/client/service-client-int-config.xml
+
+## Local file system
+vospace.file.system=file:///
+vospace.download=/
+
+### LDAP conf
+ldap.pwd=
+ldap.usr=cn=
+ldap.server=
+
+
+#Unique application identifier by context
+app.id=
+
+#Jobs startup behavior
+uws.restart.pending_jobs=false
+
+db.server=
+db.port=
+db.name=
+db.owner=
+# To set in local build.properties
+db.pwd=
+
+## #UWS
+#uws storage
+uws.app.storage_dir=/uws
+
+#uws max parallel jobs
+uws.max_running_jobs=20
+
+#Uploads enabled
+uws.upload.enabled=true
+
+#in bytes (aprox: 1 GB)
+uws.upload.max_size=1000000000
+
+#database usage
+uws.db.usage=true
+
+#user quotas in bytes
+uws.db.quota=1048576000
+uws.files.quota=1048576000
+
+#exec duration limit (0 no limit)
+uws.exec_duration_limit=0
+
+#Fixed base url
+#Nothing
+uws.fixed_base_url=
+
+#Jobs Removal   
+#Jobs removal check time (-1 to disable), by default: 24h (= 24*60*60*1000=86400000)
+uws.jobs_removal_check_time=86400000
+#Job removal comparison time (to remove old jobs), by default: 3 days (= 3*24*60*60*1000=259200000)
+uws.jobs_delta_destruction_time=259200000
+#orphan jobs and old empty directories comparison time: 30 days (= 30*24*60*60*1000=259200000)
+uws.old_empty_dirs_cmp_time=2592000000
+
+#Events removal
+#Events removal check time (-1 to disable), by default: 24h (= 24*60*60*1000=86400000)
+uws.events_removal_check_time=86400000
+#Events removal comparison time (to remove old events), by default: 1 day (= 24*60*60*1000=86400000)
+uws.events_delta_destruction_time=86400000
+
+#Notifications removal
+#Notifications removal check time (-1 to disable), by default: 24h (= 24*60*60*1000=86400000)
+uws.notifications_removal_check_time=86400000
+#Notifications removal comparison time (to remove old notifications). By default: 1 month (= 30*24*60*60*1000=2592000000)
+uws.notifications_delta_destruction_time=2592000000
+
+#uws ldap
+uws.ldap.server=
+uws.ldap.search_base=
+uws.ldap.usr=

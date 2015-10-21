@@ -1,0 +1,20 @@
+<?xml encoding='US-ASCII'?>
+ 	<!ELEMENT mapping (table*)>
+ 	
+ 	<!ELEMENT table (column*,join*)>
+ 	<!ATTLIST table umlClass    CDATA   #REQUIRED>
+ 	<!ATTLIST table tableName  CDATA   #REQUIRED>
+ 	<!ATTLIST table tag     CDATA   #IMPLIED>
+ 	<!ATTLIST table persistentClass     CDATA   #REQUIRED>
+ 	
+ 	<!ELEMENT column (#PCDATA)>
+ 	<!ATTLIST column umlAttribute    CDATA   #REQUIRED>
+ 	<!ATTLIST column columnName  CDATA   #REQUIRED>
+ 	<!ATTLIST column tag     CDATA   #IMPLIED>
+ 	<!ATTLIST column tag     CDATA   #IMPLIED>
+
+ 	<!ELEMENT join (#PCDATA)>
+ 	<!ATTLIST join destinationClass    CDATA   #REQUIRED>
+ 	<!ATTLIST join columnName  CDATA   #REQUIRED>
+ 	<!ATTLIST join weight CDATA   #REQUIRED> 	
+ 	
